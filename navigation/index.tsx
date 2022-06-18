@@ -8,6 +8,7 @@ import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
 import { CitySearch } from "../screens/CitySearch";
+import { Data } from "../screens/Data";
 import { RootStackParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 
@@ -48,6 +49,7 @@ function RootNavigator() {
       }}
     >
       <Stack.Screen name={"City Search"} component={CitySearch}></Stack.Screen>
+      <Stack.Screen name={"Data"} component={Data}></Stack.Screen>
     </Stack.Navigator>
   );
 }
