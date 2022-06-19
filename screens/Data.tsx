@@ -15,133 +15,203 @@ import {
   Ionicons,
   SimpleLineIcons,
 } from "@expo/vector-icons";
+import loader from "../assets/images/loader.gif";
+import BrokenClouds from "../assets/images/BrokenClouds.png";
+import ClearD from "../assets/images/ClearD.png";
+import ClearN from "../assets/images/ClearN.png";
+import FewCloudsD from "../assets/images/FewCloudsD.png";
+import FewCloudsN from "../assets/images/FewCloudsN.png";
+import Fog from "../assets/images/Fog.png";
+import RainD from "../assets/images/RainD.png";
+import RainN from "../assets/images/RainN.png";
+import ScatteredClouds from "../assets/images/ScatteredClouds.png";
+import ShowerRain from "../assets/images/ShowerRain.png";
+import Snow from "../assets/images/Snow.png";
+import Thunder from "../assets/images/Thunder.png";
+import { useFonts } from "expo-font";
 
 const horizontal = vw(100) > vh(100);
+
+type ImageList = {
+  "01": Array<any>;
+  "02": Array<any>;
+  "03": Array<any>;
+  "04": Array<any>;
+  "09": Array<any>;
+  "10": Array<any>;
+  "11": Array<any>;
+  "13": Array<any>;
+  "50": Array<any>;
+};
+
+const imageList: ImageList = {
+  "01": [ClearD, ClearN],
+  "02": [FewCloudsD, FewCloudsN],
+  "03": [ScatteredClouds, ScatteredClouds],
+  "04": [BrokenClouds, BrokenClouds],
+  "09": [ShowerRain, ShowerRain],
+  "10": [RainD, RainN],
+  "11": [Thunder, Thunder],
+  "13": [Snow, Snow],
+  "50": [Fog, Fog],
+};
+
+const codeToImage = (code: string) => {
+  const codeArr = code.split("");
+  const weather = `${codeArr[0]}${codeArr[1]}`;
+  const time = codeArr[2] === "d" ? 0 : 1;
+  return imageList[weather][time];
+};
 //@ts-ignore
 export const Data: React.SFC<{}> = ({ route, navigation }) => {
-  const { weather, main, list, data, sys } = route.params;
+  const { weather, main, list, data, sys, promiseInProgress } = route.params;
+  const [loaded] = useFonts({
+    VarelaRound: require("../assets/fonts/VarelaRound-Regular.ttf"),
+  });
+  if (!loaded) {
+    return null;
+  }
+  const unixtotime = (unix_timestamp: number) => {
+    const date = new Date(unix_timestamp * 1000);
+    const hours = date.getHours();
+    const minutes = `${date.getMinutes()}`;
+    return `${hours}:${
+      10 > minutes.substring(-2)
+        ? `0${minutes.substring(-2)}`
+        : minutes.substring(-2)
+    }`;
+  };
   return (
-    <ImageBackground source={{ uri: data.image.uri }} style={styles.background}>
-      <>
-        <View style={styles.container}>
-          <View style={styles.top}>
-            <View style={styles.topLeft}>
-              <Text style={styles.city}>
-                {data.name.length > 14
-                  ? `${data.name.substring(0, 14)}...`
-                  : data.name}
-              </Text>
-              <Text style={styles.temperature}>{main.temp.toFixed(0)}˚C</Text>
+    <ImageBackground
+      source={{
+        uri: data.image.uri,
+      }}
+      style={styles.background}
+    >
+      {promiseInProgress ? (
+        <Image source={loader} style={styles.loader}></Image>
+      ) : (
+        <>
+          <View style={styles.container}>
+            <View style={styles.top}>
+              <View style={styles.topLeft}>
+                <Text style={styles.city}>
+                  {data.name.length > 14
+                    ? `${data.name.substring(0, 14)}...`
+                    : data.name}
+                </Text>
+                <Text style={styles.temperature}>{main.temp.toFixed(0)}˚C</Text>
+              </View>
+              <View style={styles.topRight}>
+                <Text style={styles.highAndLow}>
+                  H: {main.temp_max.toFixed(0)}˚C
+                </Text>
+                <Text style={styles.highAndLow}>
+                  L: {main.temp_min.toFixed(0)}˚C
+                </Text>
+              </View>
             </View>
-            <View style={styles.topRight}>
-              <Text style={styles.highAndLow}>
-                H: {main.temp_max.toFixed(0)}˚C
-              </Text>
-              <Text style={styles.highAndLow}>
-                L: {main.temp_min.toFixed(0)}˚C
-              </Text>
-            </View>
-          </View>
-          <ScrollView
-            style={styles.bottom}
-            contentContainerStyle={{
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={"https://picsum.photos/200"}
-              style={styles.icon}
-            ></Image>
-            <Text style={[styles.description]}>{weather[0].main}</Text>
-            <IconButton
-              icon="arrow-right"
-              size={horizontal ? vh(5) : vw(5)}
-              color={Colors.cyan500}
-              onPress={() =>
-                navigation.navigate("Charts", {
-                  weather: weather[0],
-                  image: "https://picsum.photos/200",
-                  list: list,
-                  background: data.image.uri,
-                })
-              }
-              style={{ alignSelf: "flex-end" }}
-              animated
-              accessibilityLabel="Charts"
-              accessibilityRole="button"
-            ></IconButton>
-            <DataTable style={[styles.table]}>
-              <DataTable.Row>
-                <DataTable.Cell numeric>
-                  <SimpleLineIcons name="speedometer" color="white" />
-                </DataTable.Cell>
-                <DataTable.Cell style={{ flex: 2 }}>
-                  {" "}
-                  <Text style={{ color: "white" }}> Pressure</Text>
-                </DataTable.Cell>
-                <DataTable.Cell numeric style={{ flex: 2 }}>
-                  {" "}
-                  <Text style={{ color: "white" }}> {main.pressure} hPa</Text>
-                </DataTable.Cell>
-              </DataTable.Row>
+            <ScrollView
+              style={styles.bottom}
+              contentContainerStyle={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={codeToImage(weather[0].icon)}
+                style={styles.icon}
+              ></Image>
+              <Text style={[styles.description]}>{weather[0].main}</Text>
+              <IconButton
+                icon="arrow-right"
+                size={horizontal ? vh(5) : vw(5)}
+                color={Colors.cyan500}
+                onPress={() =>
+                  navigation.navigate("Charts", {
+                    weather: weather[0],
+                    image: "https://picsum.photos/200",
+                    list: list,
+                    background: data.image.uri,
+                  })
+                }
+                style={{ alignSelf: "flex-end" }}
+                animated
+                accessibilityLabel="Charts"
+                accessibilityRole="button"
+              ></IconButton>
+              <DataTable style={[styles.table]}>
+                <DataTable.Row>
+                  <DataTable.Cell numeric>
+                    <SimpleLineIcons name="speedometer" color="white" />
+                  </DataTable.Cell>
+                  <DataTable.Cell style={{ flex: 2 }}>
+                    {" "}
+                    <Text style={{ color: "white" }}> Pressure</Text>
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric style={{ flex: 2 }}>
+                    {" "}
+                    <Text style={{ color: "white" }}> {main.pressure} hPa</Text>
+                  </DataTable.Cell>
+                </DataTable.Row>
 
-              <DataTable.Row>
-                <DataTable.Cell numeric>
-                  <Ionicons name="water" color="white" />
-                </DataTable.Cell>
-                <DataTable.Cell style={{ flex: 2 }}>
-                  {" "}
-                  <Text style={{ color: "white" }}> Humidity</Text>
-                </DataTable.Cell>
-                <DataTable.Cell numeric style={{ flex: 2 }}>
-                  {" "}
-                  <Text style={{ color: "white" }}>{main.humidity}%</Text>
-                </DataTable.Cell>
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell numeric>
-                  <FontAwesome5 name="temperature-high" color="white" />
-                </DataTable.Cell>
-                <DataTable.Cell style={{ flex: 2 }}>
-                  {" "}
-                  <Text style={{ color: "white" }}> Feels Like</Text>
-                </DataTable.Cell>
-                <DataTable.Cell numeric style={{ flex: 2 }}>
-                  {" "}
-                  <Text style={{ color: "white" }}>{main.feels_like}˚C</Text>
-                </DataTable.Cell>
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell numeric>
-                  <Feather name="sunrise" color="white" />
-                </DataTable.Cell>
-                <DataTable.Cell style={{ flex: 2 }}>
-                  {" "}
-                  <Text style={{ color: "white" }}> Sunrise</Text>
-                </DataTable.Cell>
-                <DataTable.Cell numeric style={{ flex: 2 }}>
-                  {" "}
-                  <Text style={{ color: "white" }}>6:69</Text>
-                </DataTable.Cell>
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell numeric>
-                  <Feather name="sunset" color="white" />
-                </DataTable.Cell>
-                <DataTable.Cell style={{ flex: 2 }}>
-                  {" "}
-                  <Text style={{ color: "white" }}> Sunset</Text>
-                </DataTable.Cell>
-                <DataTable.Cell numeric style={{ flex: 2 }}>
-                  {" "}
-                  <Text style={{ color: "white" }}> 6:69</Text>
-                </DataTable.Cell>
-              </DataTable.Row>
-            </DataTable>
-          </ScrollView>
-        </View>
-      </>
+                <DataTable.Row>
+                  <DataTable.Cell numeric>
+                    <Ionicons name="water" color="white" />
+                  </DataTable.Cell>
+                  <DataTable.Cell style={{ flex: 2 }}>
+                    {" "}
+                    <Text style={{ color: "white" }}> Humidity</Text>
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric style={{ flex: 2 }}>
+                    {" "}
+                    <Text style={{ color: "white" }}>{main.humidity}%</Text>
+                  </DataTable.Cell>
+                </DataTable.Row>
+                <DataTable.Row>
+                  <DataTable.Cell numeric>
+                    <FontAwesome5 name="temperature-high" color="white" />
+                  </DataTable.Cell>
+                  <DataTable.Cell style={{ flex: 2 }}>
+                    {" "}
+                    <Text style={{ color: "white" }}> Feels Like</Text>
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric style={{ flex: 2 }}>
+                    {" "}
+                    <Text style={{ color: "white" }}>{main.feels_like}˚C</Text>
+                  </DataTable.Cell>
+                </DataTable.Row>
+                <DataTable.Row>
+                  <DataTable.Cell numeric>
+                    <Feather name="sunrise" color="white" />
+                  </DataTable.Cell>
+                  <DataTable.Cell style={{ flex: 2 }}>
+                    {" "}
+                    <Text style={{ color: "white" }}> Sunrise</Text>
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric style={{ flex: 2 }}>
+                    {" "}
+                    <Text style={{ color: "white" }}>6:69</Text>
+                  </DataTable.Cell>
+                </DataTable.Row>
+                <DataTable.Row>
+                  <DataTable.Cell numeric>
+                    <Feather name="sunset" color="white" />
+                  </DataTable.Cell>
+                  <DataTable.Cell style={{ flex: 2 }}>
+                    {" "}
+                    <Text style={{ color: "white" }}> Sunset</Text>
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric style={{ flex: 2 }}>
+                    {" "}
+                    <Text style={{ color: "white" }}> 6:69</Text>
+                  </DataTable.Cell>
+                </DataTable.Row>
+              </DataTable>
+            </ScrollView>
+          </View>
+        </>
+      )}
     </ImageBackground>
   );
 };

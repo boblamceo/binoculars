@@ -5,6 +5,7 @@ import animation from "../assets/images/animation.gif";
 import { useFonts } from "expo-font";
 import "react-native-gesture-handler";
 import { current, forecast, urban } from "../data/earthData";
+import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 
 type Res = {
   data: {
@@ -30,6 +31,7 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
   const [list, setList] = useState(null);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [location, setLocation] = useState("");
+  const { promiseInProgress } = usePromiseTracker();
   const [data, setData] = useState<ImageData>({
     image: undefined,
     name: "loading...",
@@ -58,26 +60,31 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
         list,
         data,
         sys,
+        promiseInProgress,
       });
     }
   }, [weather, data, list]);
   useEffect(() => {
     try {
-      current(location).then(({ data: { weather, main, sys } }) => {
-        setWeather(weather);
-        setMain(main);
-        setSys(sys);
-      }),
+      trackPromise(
+        current(location).then(({ data: { weather, main, sys } }) => {
+          setWeather(weather);
+          setMain(main);
+          setSys(sys);
+        }),
+
         forecast(location).then(({ data: { list } }) => {
           setList(list);
         }),
+        //@ts-ignore
         urban(location)
           .then((res) => {
             getData(res);
           })
           .catch((err) => {
             console.log(err);
-          });
+          }),
+      );
     } catch (err) {
       setError(err);
     }
