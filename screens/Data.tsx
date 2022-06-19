@@ -191,7 +191,9 @@ export const Data: React.SFC<{}> = ({ route, navigation }) => {
                   </DataTable.Cell>
                   <DataTable.Cell numeric style={{ flex: 2 }}>
                     {" "}
-                    <Text style={{ color: "white" }}>6:69</Text>
+                    <Text style={{ color: "white" }}>
+                      {unixtotime(sys.sunrise)}
+                    </Text>
                   </DataTable.Cell>
                 </DataTable.Row>
                 <DataTable.Row>
@@ -204,7 +206,9 @@ export const Data: React.SFC<{}> = ({ route, navigation }) => {
                   </DataTable.Cell>
                   <DataTable.Cell numeric style={{ flex: 2 }}>
                     {" "}
-                    <Text style={{ color: "white" }}> 6:69</Text>
+                    <Text style={{ color: "white" }}>
+                      {unixtotime(sys.sunset)}
+                    </Text>
                   </DataTable.Cell>
                 </DataTable.Row>
               </DataTable>
