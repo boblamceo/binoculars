@@ -6,6 +6,7 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
 import { ColorSchemeName } from "react-native";
+import { Charts } from "../screens/Charts";
 
 import { CitySearch } from "../screens/CitySearch";
 import { Data } from "../screens/Data";
@@ -50,6 +51,7 @@ function RootNavigator() {
     >
       <Stack.Screen name={"City Search"} component={CitySearch}></Stack.Screen>
       <Stack.Screen name={"Data"} component={Data}></Stack.Screen>
+      <Stack.Screen name={"Charts"} component={Charts}></Stack.Screen>
     </Stack.Navigator>
   );
 }
