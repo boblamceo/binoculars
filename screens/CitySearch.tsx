@@ -88,6 +88,9 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
     } catch (err) {
       setError(err);
     }
+    return () => {
+      setData({ image: { uri: "" }, name: "" });
+    };
   }, [location]);
   if (!loaded) {
     return null;
