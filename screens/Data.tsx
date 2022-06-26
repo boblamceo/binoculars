@@ -130,7 +130,7 @@ export const Data: React.SFC<{}> = ({ route, navigation }) => {
                 onPress={() =>
                   navigation.navigate("Charts", {
                     weather: weather[0],
-                    image: "https://picsum.photos/200",
+                    image: codeToImage(weather[0].icon),
                     list: list,
                     background: data.image.uri,
                   })
