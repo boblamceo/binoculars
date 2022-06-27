@@ -189,7 +189,7 @@ export const Charts: React.SFC<{}> = ({ route }) => {
                   ],
                 }}
                 width={horizontal ? vh(500) : vw(500)}
-                height={horizontal ? vh(70) : vw(70)}
+                height={horizontal ? vh(30) : vw(70)}
                 yAxisInterval={1}
                 chartConfig={{
                   backgroundGradientFrom: `#000`,
@@ -259,9 +259,6 @@ export const Charts: React.SFC<{}> = ({ route }) => {
               />
             </ScrollView>
           </View>
-          <Text style={{ color: "white" }}>
-            {pressure.toString()} | {rain.toString()}
-          </Text>
           <FlatList
             data={list}
             renderItem={({ item }) => {
@@ -270,6 +267,10 @@ export const Charts: React.SFC<{}> = ({ route }) => {
                   image={codeToImage(item.weather[0].icon)}
                   temp={item.main.temp}
                   time={item["dt_txt"]}
+                  pressure={item.main.pressure}
+                  rain={item.rain ? item.rain["3h"] : 0}
+                  includesPressure={pressure}
+                  includesRain={rain}
                 ></Card>
               );
             }}
@@ -277,6 +278,7 @@ export const Charts: React.SFC<{}> = ({ route }) => {
               return item["dt_txt"];
             }}
             horizontal
+            style={{ position: "absolute", bottom: horizontal ? vh(7) : vw(7) }}
           ></FlatList>
           <Portal>
             <Dialog
