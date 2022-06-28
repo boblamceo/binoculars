@@ -170,7 +170,7 @@ export const Charts: React.SFC<{}> = ({ route }) => {
           ></IconButton>
           <View
             style={{
-              height: horizontal ? vh(70) : vw(70),
+              height: horizontal ? vh(30) : vw(90),
             }}
           >
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -189,7 +189,7 @@ export const Charts: React.SFC<{}> = ({ route }) => {
                   ],
                 }}
                 width={horizontal ? vh(500) : vw(500)}
-                height={horizontal ? vh(30) : vw(70)}
+                height={horizontal ? vh(30) : vw(90)}
                 yAxisInterval={1}
                 chartConfig={{
                   backgroundGradientFrom: `#000`,
@@ -284,7 +284,10 @@ export const Charts: React.SFC<{}> = ({ route }) => {
             <Dialog
               visible={visible}
               onDismiss={hideDialog}
-              style={{ alignItems: "center" }}
+              style={{
+                alignItems: "center",
+                paddingBottom: horizontal ? vh(2) : vw(2),
+              }}
             >
               <View style={styles.settings}>
                 <Picker
@@ -302,8 +305,19 @@ export const Charts: React.SFC<{}> = ({ route }) => {
                   value === "pressure" ? setPressure(!pressure) : setRain(!rain)
                 }
               >
-                <ToggleButton icon="gauge" value="pressure" />
-                <ToggleButton icon="weather-rainy" value="rain" />
+                <ToggleButton
+                  icon="gauge"
+                  value="pressure"
+                  style={{
+                    marginRight: horizontal ? vh(1) : vw(1),
+                    borderWidth: 0,
+                  }}
+                />
+                <ToggleButton
+                  icon="weather-rainy"
+                  value="rain"
+                  style={{ borderWidth: 0 }}
+                />
               </ToggleButton.Row>
             </Dialog>
           </Portal>
