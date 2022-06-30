@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { vw } from "react-native-expo-viewport-units";
-import { Text, StyleSheet, ImageBackground, TextInput } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { vh, vw } from "react-native-expo-viewport-units";
+import {
+  Text,
+  StyleSheet,
+  ImageBackground,
+  TextInput,
+  Animated,
+} from "react-native";
 import animation from "../assets/images/animation.gif";
 import { useFonts } from "expo-font";
 import "react-native-gesture-handler";
 import { current, forecast, urban } from "../data/earthData";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
+import { Button, Portal, Dialog, Provider } from "react-native-paper";
+import { Video, AVPlaybackStatus } from "expo-av";
+import helpVideo from "../assets/images/helpVideo.mp4";
 
 type Res = {
   data: {
@@ -24,7 +33,7 @@ type ImageData = {
 };
 
 //@ts-ignore
-
+const horizontal = vw(100) > vh(100);
 export const CitySearch: React.SFC<{}> = ({ navigation }) => {
   const [weather, setWeather] = useState(null);
   const [main, setMain] = useState(null);
@@ -32,6 +41,8 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [location, setLocation] = useState("");
   const { promiseInProgress } = usePromiseTracker();
+  const [visible, setVisible] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   const [data, setData] = useState<ImageData>({
     image: undefined,
     name: "loading...",
@@ -52,6 +63,13 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
       name,
     });
   };
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: false,
+    }).start();
+  }, [fadeAnim]);
   useEffect(() => {
     if (weather !== null && list !== null) {
       navigation.navigate("Data", {
@@ -97,24 +115,79 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
   }
 
   return (
-    <>
+    <Provider>
       {/*@ts-ignore*/}
       <ImageBackground style={styles.container} source={animation}>
-        <Text style={styles.hello}>Hello!</Text>
-
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-          placeholder="Type the name of a city..."
-          returnKeyType="go"
-          onSubmitEditing={() => {
-            setLocation(searchQuery);
+        <Animated.View
+          style={{
+            position: "absolute",
+            top: vh(4),
+            right: fadeAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [vw(-10), vw(4)],
+            }),
+            opacity: fadeAnim,
           }}
-        />
-        {error ? <Text>{error}</Text> : null}
+        >
+          <Button
+            icon={"comment-question"}
+            color={"#00ACD1"}
+            size={horizontal ? vh(8) : vw(8)}
+            mode="contained"
+            onPress={() => {
+              setVisible(true);
+            }}
+            compact
+            style={{
+              borderRadius: 1000,
+            }}
+          ></Button>
+        </Animated.View>
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text style={styles.hello}>Hello!</Text>
+
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+            placeholder="Type the name of a city..."
+            returnKeyType="go"
+            onSubmitEditing={() => {
+              setLocation(searchQuery);
+            }}
+          />
+          {error ? <Text>{error}</Text> : null}
+        </Animated.View>
       </ImageBackground>
-    </>
+      <Portal>
+        <Dialog
+          visible={visible}
+          onDismiss={() => {
+            setVisible(false);
+          }}
+          style={{
+            alignItems: "center",
+          }}
+        >
+          <Video
+            style={{
+              width: horizontal ? vh(80) : vw(80),
+              height: horizontal ? vh(80) : vw(80),
+            }}
+            source={helpVideo}
+            useNativeControls
+            resizeMode="cover"
+          />
+        </Dialog>
+      </Portal>
+    </Provider>
   );
 };
 
