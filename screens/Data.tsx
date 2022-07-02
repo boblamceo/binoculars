@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Image,
   ImageBackground,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Animated,
 } from "react-native";
 import { vh, vw } from "react-native-expo-viewport-units";
 import { Colors, DataTable, IconButton } from "react-native-paper";
@@ -65,12 +66,21 @@ const codeToImage = (code: string) => {
 //@ts-ignore
 export const Data: React.SFC<{}> = ({ route, navigation }) => {
   const { weather, main, list, data, sys, promiseInProgress } = route.params;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   const [loaded] = useFonts({
     VarelaRound: require("../assets/fonts/VarelaRound-Regular.ttf"),
   });
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: false,
+    }).start();
+  }, [fadeAnim]);
   if (!loaded) {
     return null;
   }
+
   const unixtotime = (unix_timestamp: number) => {
     const date = new Date(unix_timestamp * 1000);
     const hours = date.getHours();
@@ -92,7 +102,7 @@ export const Data: React.SFC<{}> = ({ route, navigation }) => {
         <Image source={loader} style={styles.loader}></Image>
       ) : (
         <>
-          <View style={styles.container}>
+          <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
             <View style={styles.top}>
               <View style={styles.topLeft}>
                 <Text style={styles.city}>
@@ -213,7 +223,7 @@ export const Data: React.SFC<{}> = ({ route, navigation }) => {
                 </DataTable.Row>
               </DataTable>
             </ScrollView>
-          </View>
+          </Animated.View>
         </>
       )}
     </ImageBackground>
@@ -234,10 +244,10 @@ const styles = StyleSheet.create({
   container: {
     width: horizontal ? vh(120) : vw(80),
     height: horizontal ? vh(80) : vw(120),
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
     borderRadius: horizontal ? vh(5) : vw(5),
     paddingHorizontal: horizontal ? vh(5) : vw(5),
     paddingVertical: horizontal ? vh(5) : vw(5),
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     shadowColor: "#FFF",
     shadowOffset: {
       width: 0,

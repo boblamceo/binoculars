@@ -13,7 +13,7 @@ import "react-native-gesture-handler";
 import { current, forecast, urban } from "../data/earthData";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { Button, Portal, Dialog, Provider } from "react-native-paper";
-import { Video, AVPlaybackStatus } from "expo-av";
+import { Video } from "expo-av";
 import helpVideo from "../assets/images/helpVideo.mp4";
 
 type Res = {
