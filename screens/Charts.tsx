@@ -189,7 +189,7 @@ export const Charts: React.SFC<{}> = ({ route }) => {
                   ],
                 }}
                 width={horizontal ? vh(500) : vw(500)}
-                height={horizontal ? vh(30) : vw(90)}
+                height={horizontal ? vh(30) : vw(80)}
                 yAxisInterval={1}
                 chartConfig={{
                   backgroundGradientFrom: `#000`,
