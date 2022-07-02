@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   ImageBackground,
+  Animated,
 } from "react-native";
 import { Header } from "react-native-elements";
 import { vh, vw } from "react-native-expo-viewport-units";
@@ -64,6 +65,7 @@ export const Charts: React.SFC<{}> = ({ route }) => {
     `${new Date().getHours()}:${new Date().getMinutes()}`,
   );
   const { weather, image, list, background } = route.params;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   const [loaded] = useFonts({
     VarelaRound: require("../assets/fonts/VarelaRound-Regular.ttf"),
   });
@@ -131,6 +133,13 @@ export const Charts: React.SFC<{}> = ({ route }) => {
 
     return () => clearInterval(DateTimer);
   }, []);
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: false,
+    }).start();
+  }, [fadeAnim]);
   if (!loaded) {
     return null;
   }
@@ -161,16 +170,35 @@ export const Charts: React.SFC<{}> = ({ route }) => {
             rightComponent={Time}
             backgroundColor={weatherColorMap[weather.description]}
           />
-          <IconButton
-            icon={"cog"}
-            color={Colors.white}
-            size={horizontal ? vh(5) : vw(5)}
-            style={{ alignSelf: "flex-end" }}
-            onPress={showDialog}
-          ></IconButton>
-          <View
+          <Animated.View
             style={{
-              height: horizontal ? vh(30) : vw(90),
+              right: fadeAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [vw(-10), 0],
+              }),
+              opacity: fadeAnim,
+            }}
+          >
+            <IconButton
+              icon={"cog"}
+              color={Colors.white}
+              size={horizontal ? vh(5) : vw(5)}
+              style={{ alignSelf: "flex-end" }}
+              onPress={showDialog}
+            ></IconButton>
+          </Animated.View>
+
+          <Animated.View
+            style={{
+              height: horizontal
+                ? fadeAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, vh(30)],
+                  })
+                : fadeAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, vw(90)],
+                  }),
             }}
           >
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -258,28 +286,37 @@ export const Charts: React.SFC<{}> = ({ route }) => {
                 withOuterLines={false}
               />
             </ScrollView>
-          </View>
-          <FlatList
-            data={list}
-            renderItem={({ item }) => {
-              return (
-                <Card
-                  image={codeToImage(item.weather[0].icon)}
-                  temp={item.main.temp}
-                  time={item["dt_txt"]}
-                  pressure={item.main.pressure}
-                  rain={item.rain ? item.rain["3h"] : 0}
-                  includesPressure={pressure}
-                  includesRain={rain}
-                ></Card>
-              );
+          </Animated.View>
+          <Animated.View
+            style={{
+              position: "absolute",
+              bottom: fadeAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [vh(-20), horizontal ? vh(7) : vw(7)],
+              }),
             }}
-            keyExtractor={(item) => {
-              return item["dt_txt"];
-            }}
-            horizontal
-            style={{ position: "absolute", bottom: horizontal ? vh(7) : vw(7) }}
-          ></FlatList>
+          >
+            <FlatList
+              data={list}
+              renderItem={({ item }) => {
+                return (
+                  <Card
+                    image={codeToImage(item.weather[0].icon)}
+                    temp={item.main.temp}
+                    time={item["dt_txt"]}
+                    pressure={item.main.pressure}
+                    rain={item.rain ? item.rain["3h"] : 0}
+                    includesPressure={pressure}
+                    includesRain={rain}
+                  ></Card>
+                );
+              }}
+              keyExtractor={(item) => {
+                return item["dt_txt"];
+              }}
+              horizontal
+            ></FlatList>
+          </Animated.View>
           <Portal>
             <Dialog
               visible={visible}
