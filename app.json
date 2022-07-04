@@ -2,7 +2,11 @@
   "expo": {
     "name": "Binoculars: Weather App",
     "slug": "binoculars",
+<<<<<<< HEAD
     "version": "1.0.1",
+=======
+    "version": "1.0.2",
+>>>>>>> parent of d182a325 (revert for like the 69th time)
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -20,17 +24,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-<<<<<<< HEAD
       "bundleIdentifier": "com.jackylam.binoculars",
-=======
-      "bundleIdentifier": "com.jackylam.binoculars"
->>>>>>> parent of 751b950 (fixing eas error)
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.jackylam.binoculars"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

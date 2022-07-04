@@ -1,6 +1,0 @@
-module Pods_BinocularsWeatherApp {
-  umbrella header "Pods-BinocularsWeatherApp-umbrella.h"
-
-  export *
-  module * { export * }
-}
