@@ -2,11 +2,7 @@
   "expo": {
     "name": "Binoculars: Weather App",
     "slug": "binoculars",
-<<<<<<< HEAD
-    "version": "1.0.1",
-=======
     "version": "1.0.2",
->>>>>>> parent of d182a325 (revert for like the 69th time)
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
