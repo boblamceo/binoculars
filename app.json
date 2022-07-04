@@ -21,7 +21,6 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.jackylam.binoculars",
-      "buildNumber": "1.2"
     },
     "android": {
       "adaptiveIcon": {
