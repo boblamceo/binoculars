@@ -2,7 +2,7 @@
   "expo": {
     "name": "Binoculars: Weather App",
     "slug": "binoculars",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -20,7 +20,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jackylam.binoculars",
+      "bundleIdentifier": "com.jackylam.binoculars"
     },
     "android": {
       "adaptiveIcon": {
