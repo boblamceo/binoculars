@@ -1,6 +1,8 @@
 {
+  "cli": {
+    "version": ">= 0.54.1"
+  },
   "build": {
-    "release": {},
     "development": {
       "distribution": "internal",
       "android": {
@@ -9,9 +11,13 @@
       "ios": {
         "buildConfiguration": "Debug"
       }
-    }
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {}
   },
   "submit": {
-    "release": {}
+    "production": {}
   }
 }

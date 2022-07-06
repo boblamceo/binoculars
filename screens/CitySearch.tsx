@@ -63,6 +63,7 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
       name,
     });
   };
+
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -127,12 +128,22 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
               outputRange: [vw(-10), vw(4)],
             }),
             opacity: fadeAnim,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 0,
+            },
+            shadowOpacity: 1,
+            shadowRadius: 10.0,
           }}
         >
           <Button
             icon={"comment-question"}
             color={"#00ACD1"}
-            size={horizontal ? vh(8) : vw(8)}
+            contentStyle={{
+              padding: horizontal ? vh(1) : vw(1),
+            }}
+            labelStyle={{ fontSize: horizontal ? vh(4.5) : vw(4.5) }}
             mode="contained"
             onPress={() => {
               setVisible(true);

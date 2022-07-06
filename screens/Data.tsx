@@ -134,8 +134,7 @@ export const Data: React.SFC<{}> = ({ route, navigation }) => {
               ></Image>
               <Text style={[styles.description]}>{weather[0].main}</Text>
               <IconButton
-                icon="arrow-right"
-                size={horizontal ? vh(5) : vw(5)}
+                icon="arrow-right-bold"
                 color={Colors.cyan500}
                 onPress={() =>
                   navigation.navigate("Charts", {
@@ -145,7 +144,10 @@ export const Data: React.SFC<{}> = ({ route, navigation }) => {
                     background: data.image.uri,
                   })
                 }
-                style={{ alignSelf: "flex-end" }}
+                style={{
+                  alignSelf: "flex-end",
+                }}
+                size={horizontal ? vh(9) : vw(9)}
                 animated
                 accessibilityLabel="Charts"
                 accessibilityRole="button"
