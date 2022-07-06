@@ -13,7 +13,7 @@ import "react-native-gesture-handler";
 import { current, forecast, urban } from "../data/earthData";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { Button, Portal, Dialog, Provider } from "react-native-paper";
-import { Video } from "expo-av";
+import { Video, Audio } from "expo-av";
 import helpVideo from "../assets/images/helpVideo.mp4";
 
 type Res = {
@@ -43,6 +43,18 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
   const { promiseInProgress } = usePromiseTracker();
   const [visible, setVisible] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [sound, setSound] = useState();
+
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../assets/WetHands.mp3"),
+    );
+    sound.setIsLoopingAsync(true);
+    sound.setVolumeAsync(0.5);
+    setSound(sound);
+    await sound.playAsync();
+  }
+
   const [data, setData] = useState<ImageData>({
     image: undefined,
     name: "loading...",
@@ -63,6 +75,17 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
       name,
     });
   };
+  useEffect(() => {
+    return sound
+      ? () => {
+          console.log("Unloading Sound");
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+  useEffect(() => {
+    playSound();
+  }, []);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
