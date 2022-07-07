@@ -7,12 +7,20 @@ import {
   TextInput,
   Animated,
 } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 import animation from "../assets/images/animation.gif";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
 import "react-native-gesture-handler";
 import { current, forecast, urban } from "../data/earthData";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
-import { Button, Portal, Dialog, Provider } from "react-native-paper";
+import {
+  Button,
+  Portal,
+  Dialog,
+  Provider,
+  Paragraph,
+} from "react-native-paper";
 import { Video, Audio } from "expo-av";
 import helpVideo from "../assets/images/helpVideo.mp4";
 
@@ -44,6 +52,7 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [sound, setSound] = useState();
+  const [tip, setTip] = useState(false);
 
   async function playSound() {
     const { sound } = await Audio.Sound.createAsync(
@@ -75,6 +84,14 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
       name,
     });
   };
+  const checkIfFirstTime = async () => {
+    const value = await AsyncStorage.getItem("firstTime");
+    if (value === null) {
+      setTip(true);
+      AsyncStorage.setItem("firstTime", "true");
+    }
+  };
+
   useEffect(() => {
     return sound
       ? () => {
@@ -85,6 +102,7 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
   }, [sound]);
   useEffect(() => {
     playSound();
+    checkIfFirstTime();
   }, []);
 
   useEffect(() => {
@@ -219,6 +237,34 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
             useNativeControls
             resizeMode="cover"
           />
+        </Dialog>
+      </Portal>
+      <Portal>
+        <Dialog
+          visible={tip}
+          onDismiss={() => {
+            setTip(false);
+          }}
+          style={{
+            alignItems: "center",
+            padding: vh(1),
+          }}
+        >
+          <Dialog.Title style={{ fontSize: horizontal ? vh(4) : vw(4) }}>
+            <AntDesign
+              name="exclamationcircleo"
+              size={horizontal ? vh(4) : vw(4)}
+              color="black"
+            />
+            &nbsp;Tip
+          </Dialog.Title>
+          <Dialog.Content>
+            <Paragraph>
+              <Text>
+                Press the button at the top-right corner if you need any help!
+              </Text>
+            </Paragraph>
+          </Dialog.Content>
         </Dialog>
       </Portal>
     </Provider>
