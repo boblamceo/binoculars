@@ -36,17 +36,7 @@ const Card: React.SFC<{}> = ({
         },
       ]}
     >
-      <Text style={styles.timetxt}>
-        {time
-          .slice(0, time.length - 3)
-          .split("")
-          .reverse()
-          .join("")
-          .slice(0, 11)
-          .split("")
-          .reverse()
-          .join("")}
-      </Text>
+      <Text style={styles.timetxt}>{time}</Text>
       <View style={styles.iconContainer}>
         <Image
           source={image}

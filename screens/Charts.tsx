@@ -83,6 +83,7 @@ export const Charts: React.SFC<{}> = ({ route }) => {
     visible: false,
     value: 0,
   });
+  console.log(list);
   const imageList = {
     "01": [ClearD, ClearN],
     "02": [FewCloudsD, FewCloudsN],
@@ -159,6 +160,27 @@ export const Charts: React.SFC<{}> = ({ route }) => {
       </View>
     );
   };
+  const stampToDate = (stamp: number) => {
+    const date = new Date(stamp * 1000);
+    const month =
+      date.getMonth() + 1 < 10
+        ? `0${date.getMonth() + 1}`
+        : date.getMonth() + 1;
+    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+    const hours =
+      date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+    const minutes =
+      date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+    return `${month}-${day} ${hours}:${minutes}`;
+  };
+  const stampToTime = (stamp: number) => {
+    const date = new Date(stamp * 1000);
+    const hours =
+      date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+    const minutes =
+      date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+    return `${hours}:${minutes}`;
+  };
   return (
     <Provider>
       <ImageBackground source={{ uri: background }} style={styles.background}>
@@ -204,9 +226,8 @@ export const Charts: React.SFC<{}> = ({ route }) => {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <LineChart
                 data={{
-                  labels: list.map((curr: { dt_txt: string }) => {
-                    const time = curr.dt_txt.split(" ")[1];
-                    return time.slice(0, time.length - 3);
+                  labels: list.map((curr: { dt: number }) => {
+                    return stampToTime(curr.dt);
                   }),
                   datasets: [
                     {
@@ -303,7 +324,7 @@ export const Charts: React.SFC<{}> = ({ route }) => {
                   <Card
                     image={codeToImage(item.weather[0].icon)}
                     temp={item.main.temp}
-                    time={item["dt_txt"]}
+                    time={stampToDate(item.dt)}
                     pressure={item.main.pressure}
                     rain={item.rain ? item.rain["3h"] : 0}
                     includesPressure={pressure}
