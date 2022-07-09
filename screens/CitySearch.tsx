@@ -247,13 +247,17 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
           }}
           style={{
             alignItems: "center",
-            padding: vh(1),
           }}
         >
-          <Dialog.Title style={{ fontSize: horizontal ? vh(4) : vw(4) }}>
+          <Dialog.Title
+            style={{
+              fontSize: horizontal ? vh(3) : vw(3),
+              padding: horizontal ? vh(1) : vw(1),
+            }}
+          >
             <AntDesign
               name="exclamationcircleo"
-              size={horizontal ? vh(4) : vw(4)}
+              size={horizontal ? vh(3) : vw(3)}
               color="black"
             />
             &nbsp;Tip
