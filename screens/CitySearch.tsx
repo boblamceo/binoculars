@@ -6,6 +6,8 @@ import {
   ImageBackground,
   TextInput,
   Animated,
+  Platform,
+  PlatformIOSStatic,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import animation from "../assets/images/animation.gif";
@@ -23,6 +25,7 @@ import {
 } from "react-native-paper";
 import { Video, Audio } from "expo-av";
 import helpVideo from "../assets/images/helpVideo.mp4";
+import helpVideoIpad from "../assets/images/helpVideoIpad.mp4";
 
 type Res = {
   data: {
@@ -39,7 +42,7 @@ type ImageData = {
   };
   name: string;
 };
-
+const platformIOS = Platform as PlatformIOSStatic;
 //@ts-ignore
 const horizontal = vw(100) > vh(100);
 export const CitySearch: React.SFC<{}> = ({ navigation }) => {
@@ -228,15 +231,27 @@ export const CitySearch: React.SFC<{}> = ({ navigation }) => {
             alignItems: "center",
           }}
         >
-          <Video
-            style={{
-              width: horizontal ? vh(80) : vw(80),
-              height: horizontal ? vh(80) : vw(80),
-            }}
-            source={helpVideo}
-            useNativeControls
-            resizeMode="cover"
-          />
+          {platformIOS.isPad ? (
+            <Video
+              style={{
+                width: horizontal ? vh(80) : vw(80),
+                height: horizontal ? vh(80) : vw(80),
+              }}
+              source={helpVideoIpad}
+              useNativeControls
+              resizeMode="cover"
+            />
+          ) : (
+            <Video
+              style={{
+                width: horizontal ? vh(80) : vw(80),
+                height: horizontal ? vh(80) : vw(80),
+              }}
+              source={helpVideo}
+              useNativeControls
+              resizeMode="cover"
+            />
+          )}
         </Dialog>
       </Portal>
       <Portal>
